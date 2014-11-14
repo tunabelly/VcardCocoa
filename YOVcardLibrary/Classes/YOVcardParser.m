@@ -13,7 +13,7 @@
 NSString * const NoneEncoding = @"None";
 NSString * const FailedDecoding = @"FailedDecoding";
 NSString * const QuotedPrintableEncoding = @"QUOTED-PRINTABLE";
-NSString * const Base64Encoding = @"BASE64";
+NSString * const Base64Encoding = @"B";
 
 @interface YOVcardParser ()
 
@@ -232,7 +232,7 @@ NSString * const Base64Encoding = @"BASE64";
             [self sendFoundLabelMessage:label];
             
             NSRange quoteprintableRange = [label rangeOfString:@"ENCODING=QUOTED-PRINTABLE" options:NSCaseInsensitiveSearch];
-            NSRange base64Range = [label rangeOfString:@"ENCODING=BASE64" options:NSCaseInsensitiveSearch];
+            NSRange base64Range = [label rangeOfString:@"ENCODING=B" options:NSCaseInsensitiveSearch];
             if (quoteprintableRange.location != NSNotFound)
             {
                 NSString *quotedPrintableValue = [[self.parser scannedQuoutedPrintableValue] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];

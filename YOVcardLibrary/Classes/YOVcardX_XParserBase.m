@@ -114,7 +114,7 @@ extern NSString * const vPREF;
         NSString *label = [self scannedLabelFromCurrentLocation];
         
         NSRange quoteprintableRange = [label rangeOfString:@"ENCODING=QUOTED-PRINTABLE" options:NSCaseInsensitiveSearch];
-        NSRange base64Range = [label rangeOfString:@"ENCODING=BASE64" options:NSCaseInsensitiveSearch];
+        NSRange base64Range = [label rangeOfString:@"ENCODING=B" options:NSCaseInsensitiveSearch];
         if (quoteprintableRange.location != NSNotFound)
         {
             NSString *quotedPrintableValue = [[self scannedQuoutedPrintableValue] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];

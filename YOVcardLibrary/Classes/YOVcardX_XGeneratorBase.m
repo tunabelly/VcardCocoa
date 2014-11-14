@@ -323,7 +323,7 @@ extern NSString * const vXAUTHOR;
 
 - (void) setDataValue:(NSData *) dataValue
 {
-    [self setEncoding:@"BASE64"];
+    [self setEncoding:@"B"];
     [self setStringValue:[dataValue base64Encoded]];
 }
 

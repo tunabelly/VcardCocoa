@@ -32,16 +32,6 @@ extern NSString * const vPREF;
 @synthesize crlfCharacterSet = crlfCharacterSet_;
 @synthesize knownLabelArray = knownLabelArray_;
 
-- (void) dealloc
-{
-    [crlfCharacterSet_ release];
-    [vcardString_ release];
-    [scanner_ release];
-    [knownLabelArray_ release];
-    
-    [super dealloc];
-}
-
 - (id) init
 {
     self = [super init];
@@ -51,7 +41,7 @@ extern NSString * const vPREF;
         knownLabelArray_ = [[NSArray alloc] initWithContentsOfFile:plistPath];
         if (knownLabelArray_ == nil)
         {
-            knownLabelArray_ = [[NSArray arrayWithObjects:vN, vFN, vPHOTO, vADR, vTEL, vEMAIL, vNICKNAME, vTITLE, vORG, vNOTE, vURL, vBDAY, vPREF, @"CHARSET", @"ENCODING", nil] retain];
+			knownLabelArray_ = @[vN, vFN, vPHOTO, vADR, vTEL, vEMAIL, vNICKNAME, vTITLE, vORG, vNOTE, vURL, vBDAY, vPREF, @"CHARSET", @"ENCODING"];
         }
     }
     return self;
@@ -248,7 +238,7 @@ extern NSString * const vPREF;
 {
     NSMutableArray *components = [NSMutableArray array];
     //NSCharacterSet *semicolonSet = [NSCharacterSet characterSetWithCharactersInString:@";"];
-    NSScanner *theScanner = [NSScanner scannerWithString:[[labelOrValue copy] autorelease]];
+    NSScanner *theScanner = [NSScanner scannerWithString:[labelOrValue copy]];
     while ([theScanner isAtEnd] == NO) 
     {
         NSString *tempString = @"";

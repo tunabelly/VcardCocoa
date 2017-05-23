@@ -38,7 +38,6 @@
     {
         [vcardRepresentation_ appendString:bufferString];
     }
-    [bufferString release];
 }
 
 - (void) beginVcard

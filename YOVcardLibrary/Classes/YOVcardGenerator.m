@@ -33,21 +33,21 @@ NSString * const vPREF = @"PREF"; // preferred item
     {
         case YOVcardVersion2_1:
         {
-            return [[[YOVcard2_1Generator alloc] init] autorelease];
+			return [YOVcard2_1Generator new];
         }
             break;
         case YOVcardVersion3_0:
         {
-            return [[[YOVcard3_0Generator alloc] init] autorelease];
+			return [YOVcard3_0Generator new];
         }
             break;
         case YOVcardVersion2_1QRCode:
         {
-            return [[[YOVcard2_1QRCodeGenerator alloc] init] autorelease];
+			return [YOVcard2_1QRCodeGenerator new];
         }
         default:
         {
-            return [[[YOVcard2_1Generator alloc] init] autorelease];
+			return [YOVcard2_1Generator new];
         }
             break;
     }

@@ -24,7 +24,7 @@ static char encodingTable[64] =
 - (NSString *) md5String 
 {
 	NSData * md5Data = [self md5Digest];
-	NSMutableString *astring = [[[NSMutableString alloc] initWithCapacity: 32] autorelease];
+	NSMutableString *astring = [[NSMutableString alloc] initWithCapacity: 32];
 	NSUInteger cnt = [md5Data length];
 	int i;
 	unsigned char *bytes = (unsigned char *)[md5Data bytes];
@@ -54,7 +54,7 @@ static char encodingTable[64] =
         [stringBuffer appendFormat:@"%02lx", (unsigned long)dataBuffer[i]];
 	}
     
-    return [[stringBuffer copy] autorelease];
+    return [stringBuffer copy];
 }
 
 - (NSString *) base64Encoded

@@ -40,10 +40,6 @@ NSString * const Base64Encoding = @"B";
 - (void) dealloc
 {
     delegate_ = nil;
-    [parser_ release];
-    [vcardStringRepresentation_ release];
-    
-    [super dealloc];
 }
 
 - (void) setVCardRepresentation:(NSString *) vcardRepresentation
@@ -124,8 +120,8 @@ NSString * const Base64Encoding = @"B";
     {
         parserClass = NSClassFromString(@"YOVcard2_1Parser");
     }
-    self.parser = [[[parserClass alloc] init] autorelease];
-    if (!self.parser) 
+	self.parser = [parserClass new];
+    if (!self.parser)
     {
         if (error != NULL)
         {
@@ -200,8 +196,6 @@ NSString * const Base64Encoding = @"B";
 
 - (void) backgroundParseVCard:(id) object
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
     NSCharacterSet *whiteSapceNewLineCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     [self.parser parseVCardRepresentation:self.vcardStringRepresentation];
     
@@ -272,8 +266,6 @@ NSString * const Base64Encoding = @"B";
             }
         }
     }
-    
-    [pool release];
 }
 
 - (void) sendDidStartMessage

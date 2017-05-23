@@ -42,7 +42,7 @@
     BOOL isSyncronize_;
 }
 
-@property (nonatomic, assign) id<YOVcardParserDelegate> delegate;
+@property (nonatomic) id<YOVcardParserDelegate> delegate;
 
 - (void) setVCardRepresentation:(NSString *) vcardRepresentation;
 - (void) setVCardFilePath:(NSString *) vcardFilePath;

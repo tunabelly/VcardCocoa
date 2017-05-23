@@ -43,34 +43,19 @@ extern NSString * const vXAUTHOR;
 @synthesize characterSet = characterSet_;
 @synthesize knownLabelArray = knownLabelArray_;
 
-- (void) dealloc
-{
-    [vcardRepresentation_ release];
-    [needTransformedCharacterSet_ release];
-    
-    [typesString_ release];
-    [valueString_ release];
-    [encoding_ release];
-    [characterSet_ release];
-    
-    [knownLabelArray_ release];
-    
-    [super dealloc];
-}
-
 - (id) init
 {
     self = [super init];
     if (self)
     {
         vcardRepresentation_ = [[NSMutableString alloc] init];
-        needTransformedCharacterSet_ = [[NSCharacterSet characterSetWithCharactersInString:@"\\;"] retain];
+        needTransformedCharacterSet_ = [NSCharacterSet characterSetWithCharactersInString:@"\\;"];
         
         NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"VCardLabel" ofType:@"plist"];
         knownLabelArray_ = [[NSArray alloc] initWithContentsOfFile:plistPath];
         if (knownLabelArray_ == nil)
         {
-            knownLabelArray_ = [[NSArray arrayWithObjects:vN, vFN, vPHOTO, vADR, vTEL, vEMAIL, vNICKNAME, vTITLE, vORG, vNOTE, vURL, vBDAY, vPREF, @"CHARSET", @"ENCODING", nil] retain];
+			knownLabelArray_ = @[vN, vFN, vPHOTO, vADR, vTEL, vEMAIL, vNICKNAME, vTITLE, vORG, vNOTE, vURL, vBDAY, vPREF, @"CHARSET", @"ENCODING"];
         }
     }
     return self;

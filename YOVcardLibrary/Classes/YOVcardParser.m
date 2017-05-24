@@ -194,11 +194,99 @@ NSString * const Base64Encoding = @"B";
     return [self startSynchronously:NO error:error];
 }
 
+- (NSDictionary *)parseVCardSync
+{
+	NSMutableDictionary *pairs = [NSMutableDictionary new];
+	NSError *error = nil;
+	BOOL isValid = [self isVcardValid:&error];
+	
+	if (isValid == YES)
+	{
+		NSCharacterSet *whiteSapceNewLineCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+		[self.parser parseVCardRepresentation:self.vcardStringRepresentation];
+		
+		while ([self.parser isAtEnd] == NO)
+		{
+			@autoreleasepool
+			{
+				NSString *label = [[self.parser scannedLabelFromCurrentLocation] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];
+				if ([label compare:@"BEGIN" options:NSCaseInsensitiveSearch] == NSOrderedSame)
+				{
+					[self.parser scannedValueFromCurrentLocation];
+					continue;
+				}
+				else if ([label compare:@"END" options:NSCaseInsensitiveSearch] == NSOrderedSame)
+				{
+					[self.parser scannedValueFromCurrentLocation];
+					continue;
+				}
+				else if ([label compare:@"VERSION" options:NSCaseInsensitiveSearch] == NSOrderedSame)
+				{
+					[self.parser scannedValueFromCurrentLocation];
+					continue;
+				}
+				
+				//[self sendFoundLabelMessage:label];
+				
+				NSRange quoteprintableRange = [label rangeOfString:@"ENCODING=QUOTED-PRINTABLE" options:NSCaseInsensitiveSearch];
+				NSRange base64Range = [label rangeOfString:@"ENCODING=B" options:NSCaseInsensitiveSearch];
+				if (quoteprintableRange.location != NSNotFound)
+				{
+					NSString *quotedPrintableValue = [[self.parser scannedQuoutedPrintableValue] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];
+					[self sendFoundValueMessage:quotedPrintableValue];
+					NSDictionary *labelInfo = [self.parser labelInfoSeparatedBySemicolon:label];
+					NSString *decodedValue = [quotedPrintableValue quotedPrintableDecoded];
+					if ([decodedValue length] != 0)
+					{
+						[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, decodedValue, QuotedPrintableEncoding, nil]];
+					}
+					else
+					{
+						[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, quotedPrintableValue, FailedDecoding, nil]];
+					}
+				}
+				else if (base64Range.location != NSNotFound)
+				{
+					NSString *base64String = [[self.parser scannedValueFromCurrentLocation] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];
+					[self sendFoundValueMessage:base64String];
+					NSDictionary *labelInfo = [self.parser labelInfoSeparatedBySemicolon:label];
+					if ([base64String length] != 0)
+					{
+						NSData *decodedValue = [[base64String dataUsingEncoding:NSUTF8StringEncoding] base64Decoded];
+						[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, decodedValue, Base64Encoding, nil]];
+					}
+					else
+					{
+						[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, base64String, FailedDecoding, nil]];
+					}
+				}
+				else
+				{
+					NSString *scannedValue = [[self.parser scannedValueFromCurrentLocation] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];
+					NSDictionary *labelInfo = [self.parser labelInfoSeparatedBySemicolon:label];
+					//[self sendFoundValueMessage:scannedValue];
+					//[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, scannedValue, NoneEncoding, nil]];
+					
+					pairs[labelInfo] = scannedValue;
+				}
+			}
+		}
+	}
+	else
+	{
+		// vCard is not valid
+		NSLog(@"vCard is not valid: %@", error.localizedDescription);
+	}
+	
+	return pairs;
+}
+
+
 - (void) backgroundParseVCard:(id) object
 {
     NSCharacterSet *whiteSapceNewLineCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     [self.parser parseVCardRepresentation:self.vcardStringRepresentation];
-    
+	
     while ([self.parser isAtEnd] == NO)
     {
         @autoreleasepool

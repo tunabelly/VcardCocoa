@@ -53,6 +53,8 @@
 - (NSRange) valueRangeForName:(NSString *) vcardKeyName error:(NSError **) error;
 // default Asynchronously
 - (BOOL) start:(NSError **) error;
-- (BOOL) startSynchronously:(BOOL) synchronize error:(NSError **) error; 
+- (BOOL) startSynchronously:(BOOL) synchronize error:(NSError **) error;
+
+- (NSDictionary *)parseVCardSync;
 
 @end

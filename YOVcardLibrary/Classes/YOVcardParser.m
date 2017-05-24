@@ -267,7 +267,13 @@ NSString * const Base64Encoding = @"B";
 					//[self sendFoundValueMessage:scannedValue];
 					//[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, scannedValue, NoneEncoding, nil]];
 					
-					pairs[labelInfo] = scannedValue;
+					NSMutableDictionary *valueDict = [[NSMutableDictionary alloc] initWithDictionary:labelInfo];
+					NSString *key = labelInfo[@"key"];
+					
+					[valueDict removeObjectForKey:@"key"];
+					valueDict[@"value"] = scannedValue;
+					
+					pairs[key] = valueDict;
 				}
 			}
 		}

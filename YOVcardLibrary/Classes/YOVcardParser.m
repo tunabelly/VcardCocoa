@@ -194,6 +194,10 @@ NSString * const Base64Encoding = @"B";
     return [self startSynchronously:NO error:error];
 }
 
+//
+// Returns a dictionary of key/value pairs where the key is soething like TEL, FN, etc.
+// The value is an array of dictionaries. Each dictionary will contain attribute, types, unknown, value.
+//
 - (NSDictionary *)parseVCardSync
 {
 	NSMutableDictionary *pairs = [NSMutableDictionary new];
@@ -264,8 +268,6 @@ NSString * const Base64Encoding = @"B";
 				{
 					NSString *scannedValue = [[self.parser scannedValueFromCurrentLocation] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];
 					NSDictionary *labelInfo = [self.parser labelInfoSeparatedBySemicolon:label];
-					//[self sendFoundValueMessage:scannedValue];
-					//[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, scannedValue, NoneEncoding, nil]];
 					
 					NSMutableDictionary *valueDict = [[NSMutableDictionary alloc] initWithDictionary:labelInfo];
 					NSString *key = labelInfo[@"key"];
@@ -273,7 +275,14 @@ NSString * const Base64Encoding = @"B";
 					[valueDict removeObjectForKey:@"key"];
 					valueDict[@"value"] = scannedValue;
 					
-					pairs[key] = valueDict;
+					if ([pairs objectForKey:key] == nil) {
+						// make an array for the values since there could be multiple of the same key (ex: TEL)
+						NSMutableArray *newArray = [NSMutableArray new];
+						pairs[key] = newArray;
+					}
+				
+					
+					[pairs[key] addObject:valueDict];;
 				}
 			}
 		}

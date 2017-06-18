@@ -252,16 +252,18 @@ NSString * const Base64Encoding = @"B";
 				else if (base64Range.location != NSNotFound)
 				{
 					NSString *base64String = [[self.parser scannedValueFromCurrentLocation] stringByTrimmingCharactersInSet:whiteSapceNewLineCharacterSet];
-					[self sendFoundValueMessage:base64String];
+
 					NSDictionary *labelInfo = [self.parser labelInfoSeparatedBySemicolon:label];
 					if ([base64String length] != 0)
 					{
 						NSData *decodedValue = [[base64String dataUsingEncoding:NSUTF8StringEncoding] base64Decoded];
-						[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, decodedValue, Base64Encoding, nil]];
-					}
-					else
-					{
-						[self sendParsedLabelAndValueMessage:[NSArray arrayWithObjects:labelInfo, label, base64String, FailedDecoding, nil]];
+						
+						// add the decoded NSData into the dictionary so it can be turned into an NSImage by the caller
+						if (decodedValue != nil)
+						{
+							NSString *key = labelInfo[@"key"];
+							pairs[key] = decodedValue;
+						}
 					}
 				}
 				else

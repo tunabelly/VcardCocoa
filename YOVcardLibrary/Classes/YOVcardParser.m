@@ -9,6 +9,7 @@
 #import "YOVcardParser.h"
 #import "NSString+QuotedPrintableEncodeDecode.h"
 #import "NSData+EncodeData.h"
+#import "Utils.h"
 
 NSString * const NoneEncoding = @"None";
 NSString * const FailedDecoding = @"FailedDecoding";
@@ -292,7 +293,7 @@ NSString * const Base64Encoding = @"B";
 	else
 	{
 		// vCard is not valid
-		NSLog(@"vCard is not valid: %@", error.localizedDescription);
+		NSLog(@"%@", [NSString stringWithFormat:@"vCard is not valid: %@", error.localizedDescription]);
 	}
 	
 	return pairs;
